@@ -13,7 +13,7 @@ function mount_virtual_media() {
   local iso_path="${4}"
   local transfer_protocol_type="${5}"
   echo "Downloading python script"
-  curl curl https://github.com/bmanzari/release/blob/templating_test/ci-operator/step-registry/baremetal/lab/agent/misc/scripts/mount_virtual_media.py > "${SHARED_DIR}/mount_virtual_media.py"
+  curl https://github.com/openshift-qe/agent-qe/blob/master/prow-utils/scripts/mount_virtual_media.py > "${SHARED_DIR}/mount_virtual_media.py"
   echo "Mounting the ISO image in ${bmc_address} via virtual media..."
   python3 -u - "${bmc_address}" "${bmc_username}" "${bmc_password}" \
     "${iso_path}" "${transfer_protocol_type^^}" "${SHARED_DIR}/mount_virtual_media.py"
