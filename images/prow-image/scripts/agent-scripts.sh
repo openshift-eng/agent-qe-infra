@@ -93,3 +93,7 @@ function oinst() {
   /tmp/openshift-install --dir="${INSTALL_DIR}" --log-level=debug "${@}" 2>&1 | grep\
    --line-buffered -v 'password\|X-Auth-Token\|UserData:'
 }
+
+function test() {
+  echo 'This is a test'
+}

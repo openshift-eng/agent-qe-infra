@@ -31,3 +31,6 @@ RUN wget -O /usr/local/bin/yq \
 COPY --from=govc /govc /bin/govc
 
 ADD templates/ templates/
+ADD scripts/ scripts/
+
+RUN source scripts/agent-scripts.sh && test
