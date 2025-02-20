@@ -5,7 +5,7 @@ ENV HOME /output
 
 RUN set -x; INSTALL_PKGS="bash bc bind-utils butane ca-certificates conntrack-tools coreos-installer diffutils \
         ethtool file findutils gawk git gzip hostname iperf3 ipmitool iproute iputils jq libvirt-client lsof make \
-        mtr net-tools nmap-ncat nmstate openssh procps procps-ng python3 python3-pip python-devel rsync shadow-utils socat strace \
+        mtr net-tools nmap-ncat nmstate openssh procps procps-ng python3 python3-pip python-devel python3-jinja2 rsync shadow-utils socat strace \
         tar tcpdump tree util-linux wget which zip gcc-toolset-12 go-toolset openssl openssl-devel sshpass" && \
   mkdir -p ${HOME} && \
   dnf install --setopt=install_weak_deps=False --nodocs -y $INSTALL_PKGS && \
@@ -25,7 +25,9 @@ RUN wget -O /usr/local/bin/yq \
   chmod +x /usr/local/bin/yq && \
   pip3 install setuptools-rust && \
   pip3 install --upgrade pip && \
-  INSTALL_PYTHON3_PKGS="netaddr junos-eznc wheel redfish sushy-tools oci-cli" && \
+  INSTALL_PYTHON3_PKGS="netaddr junos-eznc wheel redfish sushy-tools oci-cli jinjanator" && \
   pip3 install --ignore-installed $INSTALL_PYTHON3_PKGS
 
 COPY --from=govc /govc /bin/govc
+
+ADD templates/ templates/
