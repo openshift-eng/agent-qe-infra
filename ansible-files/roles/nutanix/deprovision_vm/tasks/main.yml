@@ -1,0 +1,14 @@
+---
+- name: Deprovision VMs
+  no_log: true
+  nutanix.ncp.ntnx_vms:
+    vm_uuid: "{{ item }}"
+    state: absent
+  loop: "{{ vm_uuids }}"
+
+- name: Deprovision ABI Image
+  no_log: true
+  nutanix.ncp.ntnx_images:
+    image_uuid: "{{ image_uuid }}"
+    state: "absent"
+    wait: true

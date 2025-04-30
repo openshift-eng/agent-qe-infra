@@ -1,0 +1,17 @@
+---
+- name: Upload ABI Image
+  no_log: true
+  nutanix.ncp.ntnx_images:
+    state: present
+    source_path: "{{ work_dir }}/{{ vm_clone_image_name }}"
+    name: "{{ vm_clone_image_name }}"
+    desc: "Created by agent CI"
+    image_type: "ISO_IMAGE"
+    wait: true
+  register: upload_result
+
+- name: Collect Image uuid for deprovisioning
+  no_log: true
+  copy:
+    content: "{{ upload_result.image_uuid }}"
+    dest: "{{ shared_dir }}/image_uuid.txt"

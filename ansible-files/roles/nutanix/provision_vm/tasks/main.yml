@@ -1,0 +1,64 @@
+---
+- name: Generate VMs configuration data from template
+  no_log: true
+  set_fact:
+    vm_data: "{{ lookup('template', 'vm_data.j2') }}"
+
+- name: Provision VMs
+  nutanix.ncp.ntnx_vms:
+    name: "{{ vm.vm_name }}"
+    vcpus: "{{ vm.vm_vcpus }}"
+    cores_per_vcpu: "{{ vm_cores_per_vcpu }}"
+    memory_gb: "{{ vm_memory_gb }}"
+    cluster:
+      name: "{{ cluster_name }}"
+    disks:
+      - type: DISK
+        size_gb: "{{ vm_disk_size_gb }}"
+        storage_container:
+          name: "{{ vm_container }}"
+        bus: SCSI
+      - type: CDROM
+        clone_image:
+          name: "{{ vm_clone_image_name }}"
+        bus: IDE
+    networks:
+      - subnet:
+          uuid: "{{ vm_network_uuid }}"
+        private_ip: "{{ vm.rendezvous_ip }}"
+    boot_config:
+      boot_order:
+        - DISK
+        - CDROM
+    state: present
+  loop: "{{ vm_data }}"
+  loop_control:
+    loop_var: vm
+  async: 600
+  poll: 0
+  vars:
+    ansible_async_dir: "{{ work_dir }}/.ansible_async"
+  no_log: true
+  register: create_vm_results
+
+- name: Wait for VMs to finish provisioning
+  async_status:
+    jid: "{{ item.ansible_job_id }}"
+  loop: "{{ create_vm_results.results }}"
+  register: job_result
+  until: job_result.finished
+  retries: 20
+  delay: 15
+  vars:
+    ansible_async_dir: "{{ work_dir }}/.ansible_async"
+  no_log: true
+  when: item.ansible_job_id is defined
+
+- name: Collect all VM UUIDs for deprovisioning
+  no_log: true
+  copy:
+    content: "{{ job_result.results | map(attribute='vm_uuid') | join('\n') }}"
+    dest: "{{ shared_dir }}/vm_uuids.txt"
+
+- name: All VMs provisioned successfully — ending playbook
+  meta: end_play

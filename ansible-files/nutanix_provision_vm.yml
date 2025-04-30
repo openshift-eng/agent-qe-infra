@@ -1,0 +1,14 @@
+- name: Provision VMs and upload image
+  gather_facts: false
+  module_defaults:
+    group/nutanix.ncp.ntnx:
+      nutanix_username: "{{ nutanix_username }}"
+      nutanix_password: "{{ nutanix_password }}"
+      nutanix_host: "{{ nutanix_cluster_ip }}"
+      validate_certs: false
+  vars_files:
+    - vars/ci_nutanix.yml
+  roles:
+    - name: nutanix/update_ignition
+    - name: nutanix/upload_image
+    - name: nutanix/provision_vm

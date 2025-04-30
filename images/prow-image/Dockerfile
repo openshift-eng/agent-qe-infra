@@ -19,13 +19,15 @@ RUN set -x; \
     ln -sf /usr/bin/oc /usr/bin/kubectl && \
     rm -f /tmp/oc.tar.gz
 
+COPY . .
+
 RUN wget -O /usr/local/bin/yq \
   https://github.com/mikefarah/yq/releases/download/v4.30.4/yq_linux_$(uname -m \
     | sed 's/x86_64/amd64/;s/aarch64/arm64/') && \
   chmod +x /usr/local/bin/yq && \
-  pip3 install setuptools-rust && \
   pip3 install --upgrade pip && \
-  INSTALL_PYTHON3_PKGS="netaddr junos-eznc wheel redfish sushy-tools oci-cli" && \
-  pip3 install --ignore-installed $INSTALL_PYTHON3_PKGS
+  pip3 install --no-cache-dir -I -r images/prow-image/requirements.txt
+
+RUN ansible-galaxy collection install nutanix.ncp
 
 COPY --from=govc /govc /bin/govc
