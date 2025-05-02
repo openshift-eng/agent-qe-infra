@@ -1,0 +1,9 @@
+[
+{% for i in range(vm_names | length) %}
+  {
+    "vm_name": "{{ vm_names[i] }}",
+    "rendezvous_ip": "{{ rendezvous_ip if i == 0 else '' }}",
+    "vm_vcpus": {{ 8 if vm_names | length == 1 or 'worker' in vm_names[i] else 4 }}
+  }{% if not loop.last %},{% endif %}
+{% endfor %}
+]

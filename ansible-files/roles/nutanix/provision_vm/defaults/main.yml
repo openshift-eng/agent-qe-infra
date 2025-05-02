@@ -1,0 +1,3 @@
+vm_memory_gb: 16
+vm_disk_size_gb: 120
+vm_cores_per_vcpu: 1
