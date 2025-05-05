@@ -7,6 +7,6 @@
     decoded_content=$(echo "$base64_content" | base64 --decode) && \
     modified_content="${decoded_content}
     DISABLED_HOST_VALIDATIONS=belongs-to-majority-group" && \
-    encoded_content=$(echo "$modified_content" | base64) && \
+    encoded_content=$(echo "$modified_content" | base64 | tr -d '[:space:]') && \
     jq -r -c '(.storage.files[] | select(.path == "/usr/local/share/assisted-service/assisted-service.env") | .contents.source) = "data:text/plain;charset=utf-8;base64," + $END' --arg END "$encoded_content" {{ work_dir }}/config.ign | tr -d "\n" > {{ work_dir }}/updated.ign
     coreos-installer iso ignition embed -i {{ work_dir }}/updated.ign -f {{ work_dir }}/{{ vm_clone_image_name }}
