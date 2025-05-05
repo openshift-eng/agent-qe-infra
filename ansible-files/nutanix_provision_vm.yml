@@ -1,4 +1,5 @@
 - name: Provision VMs and upload image
+  hosts: localhost
   gather_facts: false
   module_defaults:
     group/nutanix.ncp.ntnx:
