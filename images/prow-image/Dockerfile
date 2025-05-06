@@ -5,7 +5,7 @@ ENV HOME /output
 
 RUN set -x; INSTALL_PKGS="bash bc bind-utils butane ca-certificates conntrack-tools coreos-installer diffutils \
         ethtool file findutils gawk git gzip hostname iperf3 ipmitool iproute iputils jq libvirt-client lsof make \
-        mtr net-tools nmap-ncat nmstate openssh procps procps-ng python3 python3-pip python-devel rsync shadow-utils socat strace \
+        mtr net-tools nmap-ncat nmstate openssh procps procps-ng python3.11 python3.11-pip python3.11-devel rsync shadow-utils socat strace \
         tar tcpdump tree util-linux wget which zip gcc-toolset-12 go-toolset openssl openssl-devel sshpass" && \
   mkdir -p ${HOME} && \
   dnf install --setopt=install_weak_deps=False --nodocs -y $INSTALL_PKGS && \
@@ -25,9 +25,9 @@ RUN wget -O /usr/local/bin/yq \
   https://github.com/mikefarah/yq/releases/download/v4.30.4/yq_linux_$(uname -m \
     | sed 's/x86_64/amd64/;s/aarch64/arm64/') && \
   chmod +x /usr/local/bin/yq && \
-  pip3 install --upgrade pip && \
-  pip3 install --no-cache-dir -I -r images/prow-image/requirements.txt
+  pip3.11 install --upgrade pip && \
+  pip3.11 install --no-cache-dir -I -r images/prow-image/requirements.txt
 
-RUN ansible-galaxy collection install nutanix.ncp
+RUN ansible-galaxy collection install nutanix.ncp:2.1.1
 
 COPY --from=govc /govc /bin/govc
