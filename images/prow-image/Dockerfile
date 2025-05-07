@@ -3,6 +3,11 @@ FROM quay.io/ocp-splat/govc:v0.30.7 as govc
 FROM quay.io/centos/centos:stream9
 ENV HOME /output
 
+# TODO: Remove once OpenShift CI supports it out of the box (see https://access.redhat.com/articles/4859371)
+RUN chmod g+w /etc/passwd && \
+    echo 'echo default:x:$(id -u):$(id -g):Default Application User:${HOME}:/sbin/nologin\ >> /etc/passwd' > /usr/local/bin/fix_uid.sh && \
+    chmod g+rwx /usr/local/bin/fix_uid.sh
+
 RUN set -x; INSTALL_PKGS="bash bc bind-utils butane ca-certificates conntrack-tools coreos-installer diffutils \
         ethtool file findutils gawk git gzip hostname iperf3 ipmitool iproute iputils jq libvirt-client lsof make \
         mtr net-tools nmap-ncat nmstate openssh procps procps-ng python3.11 python3.11-pip python3.11-devel rsync shadow-utils socat strace \
@@ -26,13 +31,9 @@ RUN wget -O /usr/local/bin/yq \
     | sed 's/x86_64/amd64/;s/aarch64/arm64/') && \
   chmod +x /usr/local/bin/yq && \
   pip3.11 install --upgrade pip && \
-  pip3.11 install --no-cache-dir -I -r images/prow-image/requirements.txt
+  pip3.11 install --no-cache-dir -I -r images/prow-image/requirements.txt && \
+  chmod -R g+rwx /output
 
 RUN ansible-galaxy collection install nutanix.ncp:2.1.1
-
-RUN chown -R 1000:1000 /output && \
-    chmod -R u+rwX /output
-
-USER 1000:1000
 
 COPY --from=govc /govc /bin/govc
