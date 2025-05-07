@@ -30,4 +30,9 @@ RUN wget -O /usr/local/bin/yq \
 
 RUN ansible-galaxy collection install nutanix.ncp:2.1.1
 
+RUN chown -R 1000:1000 /output && \
+    chmod -R u+rwX /output
+
+USER 1000:1000
+
 COPY --from=govc /govc /bin/govc
