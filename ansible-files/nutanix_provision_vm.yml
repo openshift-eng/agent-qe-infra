@@ -11,5 +11,6 @@
     - vars/ci_nutanix.yml
   roles:
     - name: nutanix/update_ignition
+      when: vm_names | length > 1
     - name: nutanix/upload_image
     - name: nutanix/provision_vm
