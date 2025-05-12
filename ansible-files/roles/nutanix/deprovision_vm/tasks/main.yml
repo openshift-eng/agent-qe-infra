@@ -5,6 +5,7 @@
     vm_uuid: "{{ item }}"
     state: absent
   loop: "{{ vm_uuids }}"
+  ignore_errors: true
 
 - name: Deprovision ABI Image
   no_log: true
