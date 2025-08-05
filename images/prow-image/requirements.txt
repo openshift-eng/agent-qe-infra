@@ -6,6 +6,7 @@ redfish
 sushy-tools
 oci-cli
 ansible-core==2.18.5
+pexpect>=4.8
 # The following requirements are for the Nutanix Ansible collection
 pip>=21.3.1
 ipaddress>=1.0.23
