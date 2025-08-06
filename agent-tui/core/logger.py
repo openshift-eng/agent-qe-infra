@@ -28,9 +28,9 @@ def log_page_activity(cls):
     original_init = cls.__init__
 
     def new_init(self, *args, **kwargs):
-        self.logger = self.logger if hasattr(self, "logger") else None
+        self.logger = getattr(self, "logger", None)
         if not self.logger:
-            self.logger = get_logger(cls.__name__)
+            self.logger = get_logger()
         self.logger.info(f"Entered screen: {cls.__name__}")
         original_init(self, *args, **kwargs)
 
