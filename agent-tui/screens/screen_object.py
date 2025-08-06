@@ -39,7 +39,7 @@ class ScreenObject:
         self.logger.error(f"FAIL: {message}")
         if self.session:
             try:
-                self.session.sol_deactivate()
+                self.session.terminate(force=True)
             except Exception:
                 self.logger.warning("Failed to deactivate session.")
             sys.exit(1)

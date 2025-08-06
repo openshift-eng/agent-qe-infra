@@ -1,22 +1,13 @@
 import functools
-import os
 import logging
 
-def get_logger(name="agent_tui", base_dir="/tmp", ext=".log"):
+
+def get_logger(name="assisted_ui"):
     logger = logging.getLogger(name)
+    logger.setLevel(logging.INFO)
 
     if not logger.hasHandlers():
-        logger.setLevel(logging.INFO)
-
-        count = 0
-        while True:
-            suffix = f"_{count}" if count > 0 else ""
-            log_path = os.path.join(base_dir, f"{name}{suffix}{ext}")
-            if not os.path.exists(log_path):
-                break
-            count += 1
-
-        fh = logging.FileHandler(log_path)
+        fh = logging.FileHandler("/tmp/assisted_ui.log")
         fh.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
         logger.addHandler(fh)
 
@@ -31,7 +22,7 @@ def log_page_activity(cls):
         self.logger = getattr(self, "logger", None)
         if not self.logger:
             self.logger = get_logger()
-        self.logger.info(f"Entered screen: {cls.__name__}")
+        self.logger.info(f"Entered page: {cls.__name__}")
         original_init(self, *args, **kwargs)
 
     cls.__init__ = new_init
@@ -44,7 +35,9 @@ def log_page_activity(cls):
                     self.logger.info(f"Executing {_method.__name__}")
                     return _method(self, *args, **kwargs)
                 except Exception as e:
-                    self.logger.error(f"{_method.__name__} failed")
+                    self.logger.error(f"{_method.__name__} failed: {e}")
+                    screenshot_name = f"{cls.__name__}_{_method.__name__}.png"
+                    self.page.screenshot(path=f"/tmp/{screenshot_name}")
                     raise
 
             setattr(cls, attr_name, method_wrapper)

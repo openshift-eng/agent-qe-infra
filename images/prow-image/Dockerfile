@@ -34,6 +34,7 @@ RUN wget -O /usr/local/bin/yq \
   pip3.11 install --no-cache-dir -I -r images/prow-image/requirements.txt && \
   chmod -R g+rwx /output
 
+RUN playwright install firefox
 RUN ansible-galaxy collection install nutanix.ncp:2.1.1
 
 COPY --from=govc /govc /bin/govc
