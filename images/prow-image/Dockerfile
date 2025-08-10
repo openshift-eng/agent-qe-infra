@@ -11,7 +11,9 @@ RUN chmod g+w /etc/passwd && \
 RUN set -x; INSTALL_PKGS="bash bc bind-utils butane ca-certificates conntrack-tools coreos-installer diffutils \
         ethtool file findutils gawk git gzip hostname iperf3 ipmitool iproute iputils jq libvirt-client lsof make \
         mtr net-tools nmap-ncat nmstate openssh procps procps-ng python3.11 python3.11-pip python3.11-devel rsync shadow-utils socat strace \
-        tar tcpdump tree util-linux wget which zip gcc-toolset-12 go-toolset openssl openssl-devel sshpass" && \
+        tar tcpdump tree util-linux wget which zip gcc-toolset-12 go-toolset openssl openssl-devel sshpass atk alsa-lib \
+        cairo dbus-libs freetype fontconfig libX11 libXcomposite libXdamage libXext libX11-xcb libXcursor gtk3 \
+        libXfixes libXi libXrandr libXrender libxcb nspr nss pango xdg-utils gdk-pixbuf2" && \
   mkdir -p ${HOME} && \
   dnf install --setopt=install_weak_deps=False --nodocs -y $INSTALL_PKGS && \
   dnf clean all && \
