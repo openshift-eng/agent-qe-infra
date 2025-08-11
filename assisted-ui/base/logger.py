@@ -39,6 +39,9 @@ def log_page_activity(cls):
                     return _method(self, *args, **kwargs)
                 except Exception as e:
                     self.logger.error(f"{_method.__name__} failed: {e}")
+                    if self.__class__.__name__ == "ClusterDetails":
+                        textbox = self.page.get_by_role("textbox", name="Pull secret")
+                        textbox.fill("REDACTED")
                     screenshot_name = f"{cls.__name__}_{_method.__name__}.png"
                     self.page.screenshot(path=f"{screenshot_dir}/{screenshot_name}")
                     raise
