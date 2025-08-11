@@ -67,7 +67,7 @@ class SessionHandler:
                     self.session.expect("Password:", timeout=10)
                     self.session.sendline(self.ipmi_password)
                     self.logger.info("SOL session activated successfully...")
-                    self.session.expect("A start job is running for Local Registry", timeout=timeout)
+                    self.session.expect("Rendezvous IP", timeout=timeout)
                     self.session.logfile = open(self.logger.handlers[0].baseFilename, "wb")
                     return self.session
             except Exception:
