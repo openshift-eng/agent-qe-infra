@@ -1,4 +1,5 @@
 import os
+import time
 
 from playwright.sync_api import Download
 from playwright.sync_api import Page
@@ -28,5 +29,6 @@ class DownloadCredentials:
         print(f"Downloaded: {save_path}")
 
     def click_download_credentials(self):
+        time.sleep(2)
         self.download_credentials.click()
         return Review(self.page)

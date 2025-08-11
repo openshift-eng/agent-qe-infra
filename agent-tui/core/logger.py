@@ -2,16 +2,18 @@ import functools
 import os
 import logging
 
-def get_logger(name="agent_tui", base_dir="/tmp", ext=".log"):
+def get_logger(name="agent_tui", base_dir="/tmp/agent_logs", ext=".log"):
     logger = logging.getLogger(name)
-
+    logs_base_dir = base_dir
+    os.makedirs(logs_base_dir, exist_ok=True)
+    
     if not logger.hasHandlers():
         logger.setLevel(logging.INFO)
 
         count = 0
         while True:
             suffix = f"_{count}" if count > 0 else ""
-            log_path = os.path.join(base_dir, f"{name}{suffix}{ext}")
+            log_path = os.path.join(logs_base_dir, f"{name}{suffix}{ext}")
             if not os.path.exists(log_path):
                 break
             count += 1
