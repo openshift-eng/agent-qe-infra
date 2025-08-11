@@ -1,5 +1,6 @@
 import functools
 import logging
+import os
 
 
 def get_logger(name="assisted_ui"):
@@ -17,6 +18,8 @@ def get_logger(name="assisted_ui"):
 def log_page_activity(cls):
     """Class decorator to log entry and wrap all public methods."""
     original_init = cls.__init__
+    screenshot_dir = "/tmp/screenshots"
+    os.makedirs(screenshot_dir, exist_ok=True)
 
     def new_init(self, *args, **kwargs):
         self.logger = getattr(self, "logger", None)
@@ -37,7 +40,7 @@ def log_page_activity(cls):
                 except Exception as e:
                     self.logger.error(f"{_method.__name__} failed: {e}")
                     screenshot_name = f"{cls.__name__}_{_method.__name__}.png"
-                    self.page.screenshot(path=f"/tmp/{screenshot_name}")
+                    self.page.screenshot(path=f"{screenshot_dir}/{screenshot_name}")
                     raise
 
             setattr(cls, attr_name, method_wrapper)
