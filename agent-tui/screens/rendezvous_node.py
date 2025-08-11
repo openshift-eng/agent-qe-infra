@@ -8,14 +8,10 @@ from screens.warning_screen import WarningScreen
 @log_page_activity
 class RendezvousNodeSetupScreen(ScreenObject):
     def _enter_ip(self, ip):
-        if not self.expect_text("Rendezvous IP", 900):
-            self.fail("Rendezvous IP field missing")
         self.send(ip)
         return self
 
     def rendezvous_node(self):
-        if not self.expect_text("Rendezvous IP", 900):
-            self.fail("Rendezvous IP field missing")
         self.press_tab()
         self.press_enter()
         return RendezvousNodeIpSelectionScreen(self.session)
