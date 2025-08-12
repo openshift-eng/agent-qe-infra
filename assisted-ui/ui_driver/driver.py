@@ -74,7 +74,7 @@ class AgentUiDriver(BrowserInstance):
             installation_progress = review_page.click_install_cluster()
 
             installation_progress.verify_text("Installation progress")
+            self.app.stop()
         except Exception:
             self.logger.error(f"Exception occurred during the execution.")
-        finally:
-            self.app.stop()
+            sys.exit(1)
