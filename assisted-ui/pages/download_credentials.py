@@ -29,6 +29,7 @@ class DownloadCredentials:
         print(f"Downloaded: {save_path}")
 
     def click_download_credentials(self):
-        time.sleep(2)
+        time.sleep(5)
         self.download_credentials.click()
+        time.sleep(10)
         return Review(self.page)
