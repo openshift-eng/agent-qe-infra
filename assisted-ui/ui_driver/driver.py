@@ -52,7 +52,7 @@ class AgentUiDriver(BrowserInstance):
                                    .click_next_button())
 
             storage_page = (host_discovery_page
-                            .verify_host_count(3)
+                            .verify_host_count_and_status(3, "Ready")
                             .click_next_button())
 
             networking_details_page = (storage_page
