@@ -37,6 +37,6 @@ RUN wget -O /usr/local/bin/yq \
   chmod -R g+rwx /output
 
 RUN playwright install firefox
-RUN ansible-galaxy collection install nutanix.ncp:2.1.1
+RUN ansible-galaxy collection install git+https://github.com/nutanix/nutanix.ansible.git,v2.1.1
 
 COPY --from=govc /govc /bin/govc
