@@ -12,7 +12,7 @@ class RendezvousNodeSetupScreen(ScreenObject):
         return self
 
     def rendezvous_node(self):
-        self.press_tab()
+        self.press_tab(times=2)
         self.press_enter()
         return RendezvousNodeIpSelectionScreen(self.session)
 
