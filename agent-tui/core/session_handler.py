@@ -67,14 +67,28 @@ class SessionHandler:
                     self.session.expect("Password:", timeout=10)
                     self.session.sendline(self.ipmi_password)
                     self.logger.info("SOL session activated successfully...")
+                    self.add_kernel_args()
                     self.session.expect("Rendezvous IP", timeout=timeout)
-                    self.session.logfile = open(self.logger.handlers[0].baseFilename, "wb")
+                    self.session.logfile = open(self.logger.handlers[0].baseFilename, "ab")
                     return self.session
             except Exception:
                 self.logger.warning(f"BMC not ready yet. Retrying...")
                 time.sleep(30)
         self.logger.error("Timeout: Failed to activate SOL session after waiting 15 minutes.")
         sys.exit(1)
+
+    def add_kernel_args(self):
+        """
+        Workaround to add kwargs for serial console until this bug OCPBUGS-76501 is fixed
+        """
+        self.session.expect("GRUB version", timeout=900)
+        self.session.send("e")
+        self.session.expect("linux", timeout=10)
+        for _ in range(2):
+            self.session.send('\x1b[B')
+        self.session.sendcontrol('e')
+        self.session.send(" console=ttyS0")
+        self.session.sendcontrol('x')
 
     def sol_deactivate(self):
         """
