@@ -1,5 +1,4 @@
 import os
-import subprocess
 import sys
 import tempfile
 import time
@@ -63,6 +62,8 @@ class SessionHandler:
                 )
                 if response.status_code == 200:
                     self.logger.info("BMC is up and running")
+                    self.sol_deactivate()
+                    time.sleep(2)
                     self.session = pexpect.spawn(f"{self.cmd} activate", timeout=30)
                     self.session.expect("Password:", timeout=10)
                     self.session.sendline(self.ipmi_password)
@@ -82,13 +83,24 @@ class SessionHandler:
         Workaround to add kwargs for serial console until this bug OCPBUGS-76501 is fixed
         """
         self.session.expect("GRUB version", timeout=900)
+        self.logger.info("Found GRUB menu...")
+        time.sleep(2)
         self.session.send("e")
+        self.logger.info("Typed 'e' to edit...")
+        time.sleep(1)
         self.session.expect("linux", timeout=10)
+        self.logger.info("Successfully entered edit mode (found 'linux' line).")
         for _ in range(2):
             self.session.send('\x1b[B')
+            self.logger.info("Moving down...")
+            time.sleep(1)
         self.session.sendcontrol('e')
+        self.logger.info("Moved to end of line.")
         self.session.send(" console=ttyS0")
+        time.sleep(1)
+        self.logger.info("Appended serial console argument.")
         self.session.sendcontrol('x')
+        self.logger.info("Sent Ctrl+X to boot.")
 
     def sol_deactivate(self):
         """
@@ -96,7 +108,6 @@ class SessionHandler:
         Does not print exception details to avoid leaking sensitive info.
         """
         try:
-            self.session.terminate(force=True)
             self.session = pexpect.spawn(f"{self.cmd} deactivate", timeout=30)
             self.session.expect("Password:", timeout=10)
             self.session.sendline(self.ipmi_password)
