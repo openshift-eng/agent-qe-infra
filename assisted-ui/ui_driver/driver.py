@@ -43,6 +43,7 @@ class AgentUiDriver(BrowserInstance):
             virtualization_page = (cluster_details_page
                                    .type_cluster_name(self.cluster_name)
                                    .type_base_domain(self.base_domain)
+                                   .check_pull_secret()
                                    .type_pull_secret(self.pull_secret)
                                    .click_next_button())
 

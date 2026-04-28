@@ -10,6 +10,7 @@ class ClusterDetails:
         self.page = page
         self.cluster_name = page.get_by_role("textbox", name="Cluster name")
         self.base_domain = page.get_by_role("textbox", name="Base domain")
+        self.edit_pull_secret = page.get_by_role("checkbox", name="edit pull secret")
         self.pull_secret = page.get_by_role("textbox", name="Pull secret")
         self.next_button = page.get_by_role("button", name="Next")
         self.verify_text = page.get_by_role("main")
@@ -20,6 +21,10 @@ class ClusterDetails:
 
     def type_base_domain(self, base_domain: str):
         self.base_domain.fill(base_domain)
+        return self
+
+    def check_pull_secret(self):
+        self.edit_pull_secret.check()
         return self
 
     def type_pull_secret(self, pull_secret: str):
