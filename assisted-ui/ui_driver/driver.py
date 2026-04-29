@@ -68,9 +68,12 @@ class AgentUiDriver(BrowserInstance):
                                          .type_ingress_ip(self.ingress_ip)
                                          .click_next_button())
 
-            review_page = (download_credentials_page
-                           .check_confirmation()
-                           .click_download_credentials())
+            custom_manifests = (download_credentials_page
+                                .check_confirmation()
+                                .click_download_credentials())
+
+            review_page = (custom_manifests
+                           .handle_custom_manifests())
 
             installation_progress = review_page.click_install_cluster()
 
