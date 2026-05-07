@@ -23,11 +23,9 @@ class ClusterDetails:
         self.base_domain.fill(base_domain)
         return self
 
-    def check_pull_secret(self):
-        self.edit_pull_secret.check()
-        return self
-
     def type_pull_secret(self, pull_secret: str):
+        if self.edit_pull_secret.is_visible():
+            self.edit_pull_secret.check()
         self.pull_secret.fill(pull_secret)
         return self
 
