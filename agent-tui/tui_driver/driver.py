@@ -19,7 +19,7 @@ class AgentTuiDriver:
         self.server_address = os.getenv("SERVER_ADDRESS")
         self.interface = os.getenv("INTERFACE")
         self.hostname = os.getenv("HOSTNAME")
-        self.select_network = os.getenv("SELECT_NETWORK", "dhcp").lower() == "dhcp"
+        self.network_mode = os.getenv("NETWORK_MODE", "dhcp").lower() == "dhcp"
 
         required_vars = [
             'IPMITOOL_IP',
@@ -31,7 +31,7 @@ class AgentTuiDriver:
             'AUX_HOST'
         ]
 
-        if self.select_network:
+        if self.network_mode:
             required_vars.extend(['HOSTNAME', 'IP_ADDRESS', 'SERVER_ADDRESS', 'INTERFACE'])
 
         missing_vars = [var for var in required_vars if not os.getenv(var)]
@@ -77,7 +77,7 @@ class AgentTuiDriver:
         self.run_dhcp()
 
     def run(self):
-        if self.select_network:
+        if self.network_mode:
             self.run_dhcp()
         else:
             self.run_static()
