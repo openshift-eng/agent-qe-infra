@@ -5,6 +5,7 @@ from screens.screen_object import ScreenObject
 @log_page_activity
 class LoginScreen(ScreenObject):
     def verify_rendezvous_node_info(self, expected_text):
+        self.session.logfile = open(self.logger.handlers[0].baseFilename, "ab")
         if not self.expect_text(expected_text, 500):
             self.fail("Login screen is not present")
         return self

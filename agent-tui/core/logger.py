@@ -44,9 +44,11 @@ def log_page_activity(cls):
             def method_wrapper(self, *args, _method=attr_value, **kwargs):
                 try:
                     self.logger.info(f"Executing {_method.__name__}")
+                    self.capture_screen(f"{cls.__name__}")
                     return _method(self, *args, **kwargs)
                 except Exception as e:
                     self.logger.error(f"{_method.__name__} failed")
+                    self.capture_screen(f"{_method.__name__} failed")
                     raise
 
             setattr(cls, attr_name, method_wrapper)

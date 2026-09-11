@@ -70,8 +70,6 @@ class SessionHandler:
                     self.logger.info("SOL session activated successfully...")
                     self.session.expect("GRUB", timeout=timeout)
                     self.logger.info("Found GRUB menu...")
-                    self.session.expect("Rendezvous IP", timeout=timeout)
-                    self.session.logfile = open(self.logger.handlers[0].baseFilename, "ab")
                     return self.session
             except Exception:
                 self.logger.warning(f"BMC not ready yet. Retrying...")
