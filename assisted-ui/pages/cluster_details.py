@@ -32,5 +32,4 @@ class ClusterDetails:
     def click_next_button(self):
         self.next_button.click()
         expect(self.verify_text).not_to_contain_text("Saving changes...", timeout=90000)
-        self.page.reload()
         return VirtualizationBundle(self.page)
