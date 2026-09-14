@@ -31,7 +31,7 @@ class AgentTuiDriver:
             'AUX_HOST'
         ]
 
-        if self.network_mode:
+        if not self.network_mode:
             required_vars.extend(['HOSTNAME', 'IP_ADDRESS', 'SERVER_ADDRESS', 'INTERFACE'])
 
         missing_vars = [var for var in required_vars if not os.getenv(var)]
