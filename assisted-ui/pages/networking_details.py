@@ -26,5 +26,5 @@ class NetworkingDetails:
         return self
 
     def click_next_button(self):
-        self.next_button.click(timeout=120000)
+        self.next_button.click(timeout=180000)
         return CustomManifests(self.page)
