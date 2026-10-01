@@ -12,6 +12,7 @@ class ClusterDetails:
         self.base_domain = page.get_by_role("textbox", name="Base domain")
         self.edit_pull_secret = page.get_by_role("checkbox", name="edit pull secret")
         self.pull_secret = page.get_by_role("textbox", name="Pull secret")
+        self.control_plane_nodes_dropdown = page.get_by_test_id("control-plane-nodes-dropdown-toggle")
         self.next_button = page.get_by_role("button", name="Next")
         self.verify_text = page.get_by_role("main")
 
@@ -27,6 +28,11 @@ class ClusterDetails:
         if self.edit_pull_secret.is_visible():
             self.edit_pull_secret.check()
         self.pull_secret.fill(pull_secret)
+        return self
+
+    def select_topology(self, topology_type: str):
+        self.control_plane_nodes_dropdown.click()
+        self.page.locator(f"button[id='{topology_type}']").click()
         return self
 
     def click_next_button(self):

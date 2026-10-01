@@ -10,12 +10,21 @@ class AgentUiDriver(BrowserInstance):
         super().__init__()
         self.logger = get_logger()
         self.cluster_name = os.getenv("CLUSTER_NAME")
+        self.topology_type = os.getenv("TOPOLOGY_TYPE", "COMPACT")
+        self.additional_operators = [op.strip() for op in os.getenv("ADDITIONAL_OPERATORS", "").lower().split(",") if op.strip()]
         self.pull_secret = os.getenv("PULL_SECRET")
         self.base_domain = os.getenv("BASE_DOMAIN")
         self.rendezvous_ip = os.getenv("RENDEZVOUS_IP")
         self.api_ip = os.getenv("API_IP")
         self.ingress_ip = os.getenv("INGRESS_IP")
         self.umn = os.getenv("USER_MANAGED_NETWORKING", "false").lower() == "true"
+        self.topology_map = {
+            "SNO": 1,
+            "COMPACT": 3,
+            "HA": 5,
+            "4CP": 4,
+            "5CP": 5,
+        }
 
         required_fields = [
             'cluster_name',
@@ -44,14 +53,17 @@ class AgentUiDriver(BrowserInstance):
                                    .type_cluster_name(self.cluster_name)
                                    .type_base_domain(self.base_domain)
                                    .type_pull_secret(self.pull_secret)
+                                   .select_topology(self.topology_map.get(self.topology_type, 3))
                                    .click_next_button())
 
             host_discovery_page = (virtualization_page
-                                   .click_virtualization_checkbox()
+                                   .click_virtualization_checkbox(self.topology_type)
+                                   .select_operators(self.additional_operators)
                                    .click_next_button())
 
             storage_page = (host_discovery_page
-                            .verify_host_count_and_status(3, "Ready")
+                            .verify_host_count_and_status(self.topology_map.get(self.topology_type, 3))
+                            .change_host_role_to_worker(self.topology_type)
                             .click_next_button())
 
             networking_details_page = (storage_page

@@ -42,7 +42,8 @@ class BrowserInstance:
                                                       })
 
         self.context = self.browser.new_context(
-            accept_downloads=True
+            accept_downloads=True,
+            record_video_dir="/tmp/videos/"
         )
 
         self.page = self.context.new_page()
