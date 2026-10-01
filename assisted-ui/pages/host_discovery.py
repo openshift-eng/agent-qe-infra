@@ -15,9 +15,6 @@ class HostDiscovery:
         self.host_role = page.get_by_test_id("host-role")
         self.worker = page.locator('[id="worker"]')
         self.next_button = page.get_by_role("button", name="Next")
-        self.worker_macs = [mac.strip().replace(":", "-")
-                            for mac in os.getenv("WORKER_MACS", "").lower().split(",")
-                            if mac.strip()]
         self.logger = logging.getLogger("assisted_ui")
 
     def verify_host_count_and_status(self, count: int):
@@ -27,15 +24,13 @@ class HostDiscovery:
         return self
 
     def change_host_role_to_worker(self, topology_type: str):
-        if topology_type != "HA":
-            self.logger.info("The selected topology is not HA, skipping to change host to worker..")
-            return self
-
-        for name, role in zip(self.host_name.all(), self.host_role.all()):
-            if any(mac in name.text_content() for mac in self.worker_macs):
-                role.click()
-                self.worker.click()
-
+        if topology_type == "HA":
+            self.logger.info("The selected topology is HA")
+            for name, role in zip(self.host_name.all(), self.host_role.all()):
+                if "worker" in (name.text_content() or "").lower():
+                    self.logger.info(f"Changing {name.text_content()} host role to worker..")
+                    role.click()
+                    self.worker.click()
         return self
 
     def click_next_button(self):
