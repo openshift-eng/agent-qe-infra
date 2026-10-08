@@ -1,3 +1,4 @@
+import ipaddress
 import os
 import sys
 
@@ -13,7 +14,7 @@ class AgentTuiDriver:
         self.ip = os.getenv("IPMITOOL_IP")
         self.user = os.getenv("IPMITOOL_USERNAME")
         self.password = os.getenv("IPMITOOL_PASSWORD")
-        self.rendezvous_ip = os.getenv("RENDEZVOUS_IP")
+        self.rendezvous_ip = ipaddress.ip_address(os.getenv("RENDEZVOUS_IP"))
         self.rendezvous_node = os.getenv("RENDEZVOUS_NODE")
         self.ip_address = os.getenv("IP_ADDRESS")
         self.server_address = os.getenv("SERVER_ADDRESS")
@@ -44,7 +45,11 @@ class AgentTuiDriver:
         self.logger.info("=== Starting agent-tui automation ===")
 
     def run_dhcp(self):
-        assisted_ui_message = f"Please go to http://{self.rendezvous_ip}:3001/ in your browser"
+        assisted_ui_message = (
+            f"Please go to http://[{self.rendezvous_ip}]:3001/ in your browser"
+            if self.rendezvous_ip.version == 6
+            else f"Please go to http://{self.rendezvous_ip}:3001/ in your browser"
+        )
         rendezvous_login_message = fr"This host \({self.rendezvous_ip}\) is the rendezvous host"
         non_rendezvous_login_message = f"This host is not the rendezvous host"
         try:
