@@ -62,10 +62,10 @@ class AgentTuiDriver:
                     LoginScreen(self.session).fail("Assisted UI URL message not found")
             else:
                 RendezvousNodeSetupScreen(self.session) \
-                    .non_rendezvous_node(self.rendezvous_ip) \
+                    .non_rendezvous_node(str(self.rendezvous_ip)) \
                     .verify_rendezvous_node_info(non_rendezvous_login_message)
         except Exception:
-            self.logger.error(f"Exception occurred during the execution.")
+            raise RuntimeError("Exception occurred during the execution.") from None
         finally:
             self.session_handler.sol_deactivate()
 
