@@ -11,6 +11,7 @@ class AgentUiDriver(BrowserInstance):
         self.logger = get_logger()
         self.cluster_name = os.getenv("CLUSTER_NAME")
         self.topology_type = os.getenv("TOPOLOGY_TYPE", "COMPACT")
+        self.networking_type = os.getenv("IP_STACK", "SINGLE_STACK")
         self.additional_operators = [op.strip() for op in os.getenv("ADDITIONAL_OPERATORS", "").lower().split(",") if op.strip()]
         self.pull_secret = os.getenv("PULL_SECRET")
         self.base_domain = os.getenv("BASE_DOMAIN")
@@ -71,11 +72,13 @@ class AgentUiDriver(BrowserInstance):
 
             custom_manifests = (networking_details_page
                                          .select_user_managed_networking()
+                                         .select_networking_stack(self.networking_type)
                                          .click_next_button()
                                          if self.umn else
                                          networking_details_page
                                          .type_api_ip(self.api_ip)
                                          .type_ingress_ip(self.ingress_ip)
+                                         .select_networking_stack(self.networking_type)
                                          .click_next_button())
 
             download_credentials_page = (custom_manifests
@@ -87,7 +90,7 @@ class AgentUiDriver(BrowserInstance):
 
             installation_progress = review_page.click_install_cluster()
 
-            installation_progress.verify_text("Installation progress")
+            installation_progress.verify_text("Installation progress").verify_text("Finalizing")
             self.app.stop()
         except Exception:
             self.logger.error(f"Exception occurred during the execution.")
