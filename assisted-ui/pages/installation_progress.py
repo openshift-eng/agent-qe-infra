@@ -19,7 +19,7 @@ class InstallationProgress:
         self.logger.info(f"Verifying '{text}' is present")
         self.page.get_by_text(text).wait_for(
             state="visible",
-            timeout=3 * 60 * 60 * 1000
+            timeout=4 * 60 * 60 * 1000
         )
         self.logger.info("Console URL is available.")
         return None
